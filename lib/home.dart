@@ -7,7 +7,6 @@ import 'camera.dart';
 import 'bndbox.dart';
 import 'models.dart';
 
-
 class Home extends StatefulWidget {
   final List<CameraDescription> cameras;
 
@@ -32,8 +31,8 @@ class _HomePageState extends State<Home> {
     switch (_model) {
       case yolo:
         res = await Tflite.loadModel(
-          model: "assets/model_unquant.tflite",
-          labels:"assets/labels.txt"
+          model: "assets/converted_model.tflite",
+          labels: "assets/labels.txt",
         );
         break;
 
@@ -53,8 +52,8 @@ class _HomePageState extends State<Home> {
             model: "assets/ssd_mobilenet.tflite",
             labels: "assets/ssd_mobilenet.txt");*/
     }
-
-        print(res);
+    print("hello loaded module...");
+    print(res);
   }
 
   onSelect(model) {
@@ -78,34 +77,32 @@ class _HomePageState extends State<Home> {
     return Scaffold(
       body: _model == ""
           ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-
-            RaisedButton(
-              child: const Text(yolo),
-              onPressed: () => onSelect(yolo),
-            ),
-
-          ],
-        ),
-      )
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RaisedButton(
+                    child: const Text(yolo),
+                    onPressed: () => onSelect(yolo),
+                  ),
+                ],
+              ),
+            )
           : Stack(
-        children: [
-          Camera(
-            widget.cameras,
-            _model,
-            setRecognitions,
-          ),
-          BndBox(
-              _recognitions == null ? [] : _recognitions,
-              math.max(_imageHeight, _imageWidth),
-              math.min(_imageHeight, _imageWidth),
-              screen.height,
-              screen.width,
-              _model),
-        ],
-      ),
+              children: [
+                Camera(
+                  widget.cameras,
+                  _model,
+                  setRecognitions,
+                ),
+                BndBox(
+                    _recognitions == null ? [] : _recognitions,
+                    math.max(_imageHeight, _imageWidth),
+                    math.min(_imageHeight, _imageWidth),
+                    screen.height,
+                    screen.width,
+                    _model),
+              ],
+            ),
     );
   }
 }
