@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tflite/tflite.dart';
 import 'dart:math' as math;
+import 'map.dart';
 
 import 'camera.dart';
 import 'bndbox.dart';
 import 'models.dart';
+import 'constant.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 
 class Home extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -24,6 +30,7 @@ class _HomePageState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    Firebase.initializeApp();
   }
 
   loadModel() async {
@@ -35,22 +42,6 @@ class _HomePageState extends State<Home> {
           labels: "assets/labels.txt",
         );
         break;
-
-      /*case mobilenet:
-        res = await Tflite.loadModel(
-            model: "assets/mobilenet_v1_1.0_224.tflite",
-            labels: "assets/mobilenet_v1_1.0_224.txt");
-        break;
-
-      case posenet:
-        res = await Tflite.loadModel(
-            model: "assets/posenet_mv1_075_float_from_checkpoints.tflite");
-        break;
-
-      default:
-        res = await Tflite.loadModel(
-            model: "assets/ssd_mobilenet.tflite",
-            labels: "assets/ssd_mobilenet.txt");*/
     }
     print("hello loaded module...");
     print(res);
@@ -74,35 +65,69 @@ class _HomePageState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
-    return Scaffold(
-      body: _model == ""
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  RaisedButton(
-                    child: const Text(yolo),
-                    onPressed: () => onSelect(yolo),
+    return SafeArea(
+      child: Scaffold(
+        appBar: PreferredSize(
+            preferredSize: Size.fromHeight(130.0),
+            child: AppBar(
+                backgroundColor: kPrimaryColor,
+                elevation: 30,title: Center(child: Padding(
+                  padding: const EdgeInsets.only(top:40.0),
+                  child: Text('Pothole  Alert',style: TextStyle(color:kTextColor,fontWeight: FontWeight.bold,
+                  fontFamily:'Satisfy',fontSize:30.0 ),),
+                )),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(50),
+                      topRight: Radius.circular(50)
+                )))),
+        body: _model == ""
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SvgPicture.asset("assets/loc.svg"),
+                    RaisedButton(
+                      child: const Text(
+                        'START JOURNEY',
+                        style: TextStyle(color: kPrimaryColor),
+                      ),
+                      onPressed: () => onSelect(yolo),
+                    ),
+                    RaisedButton(
+                      child: const Text(
+                        'MAPPING TOUR',
+                        style: TextStyle(color: kPrimaryColor),
+                      ),
+                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Gmap())),
+                    ),
+                    RaisedButton(
+                      child: const Text(
+                        '  REPORT PWD  ',
+                        style: TextStyle(color: kPrimaryColor),
+                      ),
+                      onPressed: () => onSelect(yolo),
+                    )
+                  ],
+                ),
+              )
+            : Stack(
+                children: [
+                  Camera(
+                    widget.cameras,
+                    _model,
+                    setRecognitions,
                   ),
+                  BndBox(
+                      _recognitions == null ? [] : _recognitions,
+                      math.max(_imageHeight, _imageWidth),
+                      math.min(_imageHeight, _imageWidth),
+                      screen.height,
+                      screen.width,
+                      _model),
                 ],
               ),
-            )
-          : Stack(
-              children: [
-                Camera(
-                  widget.cameras,
-                  _model,
-                  setRecognitions,
-                ),
-                BndBox(
-                    _recognitions == null ? [] : _recognitions,
-                    math.max(_imageHeight, _imageWidth),
-                    math.min(_imageHeight, _imageWidth),
-                    screen.height,
-                    screen.width,
-                    _model),
-              ],
-            ),
+      ),
     );
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'package:geolocator/geolocator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class BndBox extends StatelessWidget {
   final List<dynamic> results;
@@ -8,12 +11,27 @@ class BndBox extends StatelessWidget {
   final double screenH;
   final double screenW;
   final String model;
+  final _firestore=FirebaseFirestore.instance;
+
 
   BndBox(this.results, this.previewH, this.previewW, this.screenH, this.screenW,
       this.model);
+  void location() async{
+
+    bool isLocationServiceEnabled  = await Geolocator.isLocationServiceEnabled();
+    LocationPermission permission = await Geolocator.requestPermission();
+
+
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    print(position);
+    _firestore.collection('location').add({'Lat':position.latitude,'Lon':position.longitude});
+  }
 
   @override
   Widget build(BuildContext context) {
+    if(results.isNotEmpty){
+      location();
+    }
     List<Widget> _renderBoxes() {
       return results.map((re) {
         var _x = re["rect"]["x"];
@@ -68,75 +86,12 @@ class BndBox extends StatelessWidget {
       }).toList();
     }
 
-   /* List<Widget> _renderStrings() {
-      double offset = -10;
-      return results.map((re) {
-        offset = offset + 14;
-        return Positioned(
-          left: 10,
-          top: offset,
-          width: screenW,
-          height: screenH,
-          child: Text(
-            "${re["label"]} ${(re["confidence"] * 100).toStringAsFixed(0)}%",
-            style: TextStyle(
-              color: Color.fromRGBO(37, 213, 253, 1.0),
-              fontSize: 14.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        );
-      }).toList();
-    }
 
-    List<Widget> _renderKeypoints() {
-      var lists = <Widget>[];
-      results.forEach((re) {
-        var list = re["keypoints"].values.map<Widget>((k) {
-          var _x = k["x"];
-          var _y = k["y"];
-          var scaleW, scaleH, x, y;
-
-          if (screenH / screenW > previewH / previewW) {
-            scaleW = screenH / previewH * previewW;
-            scaleH = screenH;
-            var difW = (scaleW - screenW) / scaleW;
-            x = (_x - difW / 2) * scaleW;
-            y = _y * scaleH;
-          } else {
-            scaleH = screenW / previewW * previewH;
-            scaleW = screenW;
-            var difH = (scaleH - screenH) / scaleH;
-            x = _x * scaleW;
-            y = (_y - difH / 2) * scaleH;
-          }
-          return Positioned(
-            left: x - 6,
-            top: y - 6,
-            width: 100,
-            height: 12,
-            child: Container(
-              child: Text(
-                "● ${k["part"]}",
-                style: TextStyle(
-                  color: Color.fromRGBO(37, 213, 253, 1.0),
-                  fontSize: 12.0,
-                ),
-              ),
-            ),
-          );
-        }).toList();
-
-        lists..addAll(list);
-      });
-
-      return lists;
-    }*/
 
     return Stack(
-      children: /*model == mobilenet
-          ? _renderStrings()
-          : model == posenet ? _renderKeypoints() :*/ _renderBoxes(),
+      children:_renderBoxes(),
     );
   }
 }
+
+

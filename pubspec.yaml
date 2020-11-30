@@ -29,6 +29,9 @@ dependencies:
   tflite: ^1.1.1
   firebase_core: ^0.5.2
   cloud_firestore: ^0.14.3
+  google_fonts: ^1.1.1
+  geolocator: ^6.1.7
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -55,6 +58,7 @@ flutter:
     - assets/labels.txt
     - assets/yolov3-tiny.tflite
     - assets/converted_model.tflite
+    - assets/loc.svg
 
 
   #   - images/a_dot_ham.jpeg
@@ -70,11 +74,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
+  fonts:
+    - family: Satisfy
+      fonts:
+        - asset: assets/Satisfy-Regular.ttf
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:
