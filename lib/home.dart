@@ -11,6 +11,9 @@ import 'models.dart';
 import 'constant.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'report.dart';
+
+
 
 
 class Home extends StatefulWidget {
@@ -106,7 +109,7 @@ class _HomePageState extends State<Home> {
                         '  REPORT PWD  ',
                         style: TextStyle(color: kPrimaryColor),
                       ),
-                      onPressed: () => onSelect(yolo),
+                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>Report())),
                     )
                   ],
                 ),
@@ -131,3 +134,7 @@ class _HomePageState extends State<Home> {
     );
   }
 }
+/*
+
+
+ */
