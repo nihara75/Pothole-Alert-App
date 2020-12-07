@@ -32,6 +32,7 @@ dependencies:
   google_fonts: ^1.1.1
   geolocator: ^6.1.7
   flutter_mailer: ^1.0.1
+  rflutter_alert: ^1.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
