@@ -1,16 +1,3 @@
-# potd
+This is  a flutter app to detect pothole in a real-time basis .Navigation is provided using google maps and any person can report to nearest pwd by providing their email in the code.
 
-A new Flutter application.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+*Before use: Need to provide your own API key to the code
